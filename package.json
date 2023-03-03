@@ -1,0 +1,17 @@
+{
+  "name": "favorite-movies-app",
+  "version": "1.0.0",
+  "description": "GraphQL example application",
+  "main": "index.js",
+  "repository": "https://github.com/K-G-J/graphql-favorite-movies-app",
+  "author": "Kate Johnson",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "apollo-server": "^3.12.0",
+    "graphql": "^16.6.0",
+    "nodemon": "^2.0.21"
+  }
+}
