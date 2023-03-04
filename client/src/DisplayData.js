@@ -4,11 +4,18 @@ import { useQuery, useLazyQuery, gql, useMutation } from '@apollo/client'
 const QUERY_ALL_USERS = gql`
   query getAllUsers {
     users {
-      id
-      name
-      age
-      username
-      nationality
+      ... on UsersSuccessfulResult {
+        users {
+          id
+          name
+          age
+          username
+          nationality
+        }
+      }
+      ... on UsersErrorResult {
+        message
+      }
     }
   }
 `
@@ -55,7 +62,9 @@ export default function DisplayData() {
     { data: movieSearchedData, error: movieError },
   ] = useLazyQuery(GET_MOVIE_BY_NAME)
 
-  const [createUser] = useMutation(CREATE_USER_MUTATION)
+  const [createUser, { error: createUserError }] = useMutation(
+    CREATE_USER_MUTATION,
+  )
 
   if (loading) {
     return <h1> DATA IS LOADING... </h1>
@@ -98,16 +107,16 @@ export default function DisplayData() {
                 input: { name, username, age, nationality },
               },
             })
-
             refetch()
           }}
         >
           {' '}
           Creater User{' '}
         </button>
+        {createUserError && <p>Check values and try again</p>}
       </div>
       {data &&
-        data.users.map((user, index) => (
+        data.users.users.map((user, index) => (
           <div key={index}>
             <h1>Name: {user.name}</h1>
             <h1>Username: {user.username}</h1>

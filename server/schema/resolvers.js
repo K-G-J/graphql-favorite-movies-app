@@ -5,7 +5,10 @@ const resolvers = {
   Query: {
     // USER RESOLVERS
     users: (parent, args, context) => {
-      return UserList
+      // return users property of union object if it exists
+      if (UserList) return { users: UserList }
+
+      return { message: 'There was an error' }
     },
     user: (parent, { id }, context) => {
       return _.find(UserList, { id: Number(id) })
@@ -50,7 +53,22 @@ const resolvers = {
       return userUpdated
     },
     deleteUser: (parent, { id }, context) => {
-      return (_.remove(UserList, { id: Number(id) }))[0]
+      return _.remove(UserList, { id: Number(id) })[0]
+    },
+  },
+  // Resolver for union users return type
+  UsersResult: {
+    __resolveType(obj) {
+      // check which union type was returned
+      if (obj.users) {
+        // return string with union type that occurred
+        return 'UsersSuccessfulResult'
+      }
+      if (obj.message) {
+        return 'UsersErrorResult'
+      }
+      // graphql error case
+      return null
     },
   },
 }
