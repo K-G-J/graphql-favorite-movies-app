@@ -19,7 +19,39 @@ const resolvers = {
     },
   },
   User: {
-    favoriteMovies: (parent, args, context) => {},
+    // specific resolver for field in type
+    favoriteMovies: (parent, args, context) => {
+      return _.filter(
+        MovieList,
+        (movie) =>
+          movie.yearOfPublication >= 2000 && movie.yearOfPublication <= 2010,
+      )
+    },
+  },
+  Mutation: {
+    createUser: (parent, { input }, context) => {
+      const lastId = UserList[UserList.length - 1].id
+      const user = {
+        id: lastId + 1,
+        ...input,
+      }
+      UserList.push(user)
+      return user
+    },
+    updateUsername: (parent, { input }, context) => {
+      const { id, newUsername } = input
+      let userUpdated
+      UserList.forEach((user) => {
+        if (user.id === Number(id)) {
+          user.username = newUsername
+          userUpdated = user
+        }
+      })
+      return userUpdated
+    },
+    deleteUser: (parent, { id }, context) => {
+      return (_.remove(UserList, { id: Number(id) }))[0]
+    },
   },
 }
 
